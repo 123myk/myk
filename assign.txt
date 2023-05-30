@@ -1,0 +1,160 @@
+using System;
+using System.Collections.Generic;
+
+delegate void AddItem(string itemName, decimal price,int discount, int quantity);
+
+
+delegate void DeleteItem(string itemName);
+
+
+delegate void GenerateBill();
+
+class Program
+{
+    static List<BillItem> billItems = new List<BillItem>();
+
+    static void Main()
+    {
+        
+        AddItem addItem = AddItem;
+        DeleteItem deleteItem = DeleteItem;
+        GenerateBill generateBill = GenerateBill;
+
+        while (true)
+        {   
+            Console.WriteLine("\t\t\t\tBill\n");
+           
+            Console.WriteLine("1. Add Item");
+            Console.WriteLine("2. Delete Item");
+            Console.WriteLine("3. Generate Bill");
+            Console.WriteLine("4. Exit");
+            Console.WriteLine("Enter your choice: ");
+
+            int choice = int.Parse(Console.ReadLine());
+
+            switch (choice)
+            {
+                case 1:
+                    
+                    Console.WriteLine("\t\t\t\t\tAdd an item to the bill:");
+                  
+                    string itemName = GetUserInput("Item Name: ");
+                    decimal price = decimal.Parse(GetUserInput("Price: "));
+                    int discount = int.Parse(GetUserInput("Discount: "));
+                    int quantity = int.Parse(GetUserInput("Quantity: "));
+
+                    
+                    addItem(itemName, price, discount, quantity);
+                    Console.WriteLine("Item added to the bill.");
+                    break;
+
+                case 2:
+                   
+                    Console.WriteLine("\t\t\t\tDelete an item from the bill:");
+                    
+                    string itemToDelete = GetUserInput("Item Name: ");
+
+                    
+                    deleteItem(itemToDelete);
+                    break;
+
+                case 3:
+                    
+                    generateBill();
+                    break;
+
+                case 4:
+                    
+                    Environment.Exit(0);
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    
+    static string GetUserInput(string prompt)
+    {
+        Console.Write(prompt);
+        return Console.ReadLine();
+    }
+
+    
+    static void AddItem(string itemName, decimal price,int discount, int quantity)
+    {
+        BillItem billItem = new BillItem(itemName, price, discount, quantity);
+        billItems.Add(billItem);
+    }
+
+    
+    static void DeleteItem(string itemName)
+    {
+        BillItem itemRemove = billItems.Find(item => item.ItemName == itemName);
+        if (itemRemove != null)
+        {
+            billItems.Remove(itemRemove);
+            Console.WriteLine("Item deleted from the bill.");
+        }
+        else
+        {
+            Console.WriteLine("Item not found in the bill.");
+        }
+    }
+
+    
+    static void GenerateBill()
+    {
+        if (billItems.Count == 0)
+        {
+            Console.WriteLine("No items in the bill.");
+            return;
+        }
+       
+        Console.WriteLine("\t\t\tBill Details:");
+      
+                
+        Console.WriteLine("\t\t----------------------------");
+        
+        foreach (BillItem item in billItems)
+        {
+            Console.WriteLine($"ItemName: {item.ItemName} - Price: {item.Price} - Discount: {item.Discount} - Quantity: {item.Quantity} - GST : 18%");
+        }
+        Console.WriteLine("------------------------------------");
+
+        decimal totalAmount = CalculateTotalAmount();
+        Console.WriteLine($"Total Amount: {totalAmount}");
+    }
+
+    
+    static decimal CalculateTotalAmount()
+    {
+        decimal totalAmount = 0;
+        foreach (BillItem item in billItems)
+        {
+            totalAmount += (((item.Price -(item.Discount*item.Price/100)) * item.Quantity)+((item.Price -(item.Discount*item.Price/100)) * item.Quantity)*18/100);
+        }
+        return totalAmount;
+    }
+}
+
+
+class BillItem
+{
+    public string ItemName { get; set; }
+    public decimal Price { get; set; }
+    public int Quantity { get; set; }
+    public int Discount { get; set; }
+
+    public BillItem(string itemName, decimal price, int discount, int quantity)
+    {
+        ItemName = itemName;
+        Price = price;
+        Discount = discount;
+        Quantity = quantity;
+    }
+}
