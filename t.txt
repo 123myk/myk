@@ -1,0 +1,71 @@
+create database hospital
+use hospital
+
+create table DoctorDetails(
+   DoctorID int IDENTITY(1,1) PRIMARY KEY ,
+   Doctor_name varchar(20),
+   Qualification varchar(20),
+   Specialty varchar(20))
+   
+   select Dateadd(minute,30,'2023-06-07 09:00')
+
+insert into DoctorDetails values('tanu','mbbs','General Medicine')
+insert into DoctorDetails values('priya','mbbs','General Medicine')
+insert into DoctorDetails values('noor','mbbs','Orthopaedics')
+insert into DoctorDetails values('laiba','mbbs','Dental')
+
+select * from DoctorDetails
+
+
+create table PatientDetail(
+  Patient_Id int IDENTITY(1,1) PRIMARY KEY ,
+  FirstName varchar(20),
+  LastName varchar(20),
+  PhoneNo int,
+  Gender char(6),
+  Age int,
+  Address varchar(100),
+  AadharNo varchar(20),
+  Speciality varchar(50))
+
+  drop table Patient
+
+
+  insert into PatientDetail values('priya','keshari',672537868,'female',22,'delhi',12347575678,'Orthopaedics')
+  insert into PatientDetail values('yogu','garg',852647548,'male',22,'pune',1243536345678,'General Medicine')
+
+  insert into PatientDetail values('pankaj','kishor',875774308,'male',22,'itanagar',123353545678,'Dental')
+  insert into PatientDetail values('ankita','garg',88685857,'female',22,'mumbai',123787845678,'Dental')
+  
+
+  select *from PatientDetail
+
+ create table Appo(
+   Patient_ID int,
+   Doctor_ID int,
+  
+   primary key (Patient_ID, Doctor_ID),
+   foreign key (Patient_Id) References PatientDetail(Patient_Id),
+   foreign key (Doctor_Id) References DoctorDetails(DoctorId)
+     
+   )
+
+ 
+   select 
+   p.Patient_Id,
+   p.FirstName,
+   p.LastName,
+   p.PhoneNo,
+   p.Gender,
+   p.AadharNo,
+   p.Address,
+   p.Age,
+   p.Speciality,
+   d.DoctorID,
+   d.Doctor_name,
+   d.Qualification,
+   d.Specialty
+
+   from PatientDetail p inner join Appo pd on p.Patient_Id=pd.Patient_ID inner join DoctorDetails d on pd.Doctor_ID=d.DoctorID
+
+   select * from Appo
