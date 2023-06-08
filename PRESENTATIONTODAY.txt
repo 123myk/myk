@@ -1,0 +1,68 @@
+
+
+	----DATE AND TIME FUNCTION----
+	----These functions perform an operation on a date and time input value and return a string,numeric, or date and time value.
+
+	----Commonly used DATE AND TIME functions are-
+	----GETDATE()
+	----DATEADD()
+	----DATEDIFF()
+	----DATEPART()
+	----DATENAME()
+
+
+
+create database dateandtime
+use dateandtime
+
+---------CREATING A TABLE--------
+CREATE TABLE Orders
+(
+    order_id int NOT NULL PRIMARY KEY,
+    order_amount int NOT NULL,
+    order_placed_date date NOT NULL,
+    address varchar(50) NOT NULL
+)
+
+
+-----INSERTING VALUES IN TABLE-----
+INSERT INTO Orders(order_id,order_amount,order_placed_date,address)
+VALUES(1,750,'05-06-2023','NOIDA SECTOR 52')
+INSERT INTO Orders(order_id,order_amount,order_placed_date,address)
+VALUES(2,1750,'07-06-2023','NOIDA SECTOR 122')
+
+
+------FETCHING TABLE DETAILS-----
+SELECT * FROM Orders
+
+
+-----IF DELIVERING DATE REQUIRED-----
+		-----DELIVERY IN SECTOR 122 IS DONE WITHIN 7 DAYS
+		-----DELIVERY IN SECTOR 52 IS DONE WITHIN 3 DAYS
+SELECT DATEADD(DD,7,'05-06-2023')  ---FOR SECTOR 122
+SELECT DATEADD(DD,3,'07-06-2023')  ---FOR SECTOR 52
+
+
+-----IF DATE DIFFERENCE IS REQUIRED---
+SELECT DATEDIFF(DD,'05-06-2023',GETDATE())
+
+
+----IF ONLY PART OF DATE IS REQUIRED---
+	----FOR DAY
+	SELECT DATEPART(DD,GETDATE())
+	SELECT DAY(GETDATE())
+	
+	----FOR MONTH
+	SELECT DATEPART(MM,GETDATE())
+	SELECT MONTH(GETDATE())
+
+	----FOR YEAR
+	SELECT DATEPART(YY,GETDATE())
+	SELECT YEAR(GETDATE())
+
+----NAME IS REQUIRED IN A DATE---
+	----FOR DAY
+	SELECT DATENAME(DW,GETDATE())
+
+	----FOR MONTH
+	SELECT DATENAME(MM,GETDATE())
