@@ -1,0 +1,96 @@
+create database Hotel
+use Hotel
+drop database Hotel
+
+-----------------creating a table named Hotel-------------
+create table Hotels (
+    HotelID int primary key,
+    HotelName varchar(30),
+    Address varchar(30)
+)
+
+------------------creating a table named Rooms-------------
+create table Rooms (
+    RoomID int primary key,
+    HotelID int,
+    RoomNumber int,
+    Price decimal(10, 2),
+    foreign key (HotelID) references Hotels(HotelID)
+)
+
+-----------------creating a table named Bookings------------
+create table Bookings (
+    BookingID int primary key,
+    RoomID int,
+    CheckInDate date,
+    CheckOutDate date,
+    GuestName varchar(10),
+    foreign key (RoomID) references Rooms(RoomID)
+)
+
+------------------Instering values in all the tables----------
+insert into Hotels (HotelID, HotelName, Address) values
+(1, 'Hyat', 'Janakpuri west Delhi'),
+(2, 'Lalit', 'C. P, Delhi')
+
+insert into Rooms (RoomID, HotelID, RoomNumber, Price) values
+(1, 1, 101, 10000.00),
+(2, 1, 102, 12000.00),
+(3, 2, 201, 15000.00)
+
+insert into Bookings (BookingID, RoomID, CheckInDate, CheckOutDate, GuestName) values
+(1, 1, '2023-06-01', '2023-06-05', 'Mr. Raj'),
+(2, 2, '2023-06-03', '2023-06-07', 'Mr. Jack'),
+(3, 3, '2023-06-03', '2023-06-07', 'Mrs. Prachi')
+
+-------------------Function to calculate the price for the room-------------
+create function CalculateTotalCost
+(
+    @CheckInDate date,
+    @CheckOutDate date,
+    @Price decimal(10, 2)
+)
+returns decimal(10, 2)
+as
+  begin
+    declare @TotalCost decimal(10, 2)
+    set @TotalCost = DATEDIFF(DAY, @CheckInDate, @CheckOutDate) * @Price
+    return @TotalCost
+  end
+
+---------------------Creating view to get the desired number of column from the table-----------
+create view BookingView
+as
+select
+    B.BookingID,
+    H.HotelName,
+    R.RoomNumber,
+    B.GuestName,
+    R.Price,
+    dbo.CalculateTotalCost(B.CheckInDate, B.CheckOutDate, R.Price) as TotalCost
+from
+    Bookings B
+    join Rooms R on B.RoomID = R.RoomID
+    join Hotels H on R.HotelID = H.HotelID
+
+----------------To get detail from the view-----------------
+select * from  BookingView
+
+update Bookingview set  Hotelname='RR' where BookingId = 3
+
+------------System defined view----------
+
+--------Provides information about all objects (tables, views, procedures, functions, etc.) in the database-----------
+SELECT * FROM sys.objects
+
+--------Contains information about columns in tables and views--------
+SELECT * FROM sys.columns
+
+--------Retrieves information about tables in the database---------
+SELECT * FROM sys.tables
+
+-------Retrieves information about views in the database----------
+SELECT * FROM sys.views
+
+-------Provides information about schemas in the database--------
+SELECT * FROM sys.schemas
